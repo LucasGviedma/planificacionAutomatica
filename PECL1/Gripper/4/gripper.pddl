@@ -3,14 +3,14 @@
    (:requirements :strips :typing :disjunctive-preconditions)
    (:types room ball gripper)
 
-   (:predicates (at-robby ?r)
-                (at-ball ?b ?r)
-                (free ?g)
-                (carry ?g ?b))
+   (:predicates (at-robby ?r - room)
+                (at-ball ?b - ball ?r - room)
+                (free ?g - gripper)
+                (carry ?g - gripper ?b - ball))
 
    (:action move
 
-       :parameters (?x ?y -room)
+       :parameters (?x ?y - room)
 
        :precondition (and (at-robby ?x))
 
@@ -20,9 +20,9 @@
 
    (:action pick-up
 
-       :parameters (?ball -ball 
-                    ?room -room 
-                    ?gripper -gripper)
+       :parameters (?ball - ball 
+                    ?room - room 
+                    ?gripper - gripper)
                     
        :precondition (and (at-ball ?ball ?room)
                           (at-robby ?room)
@@ -35,9 +35,9 @@
 
    (:action drop
 
-       :parameters (?ball -ball 
-                    ?room -room 
-                    ?gripper -gripper)
+       :parameters (?ball - ball 
+                    ?room - room 
+                    ?gripper - gripper)
                     
        :precondition (and (carry ?gripper ?ball)
                           (at-robby ?room))
