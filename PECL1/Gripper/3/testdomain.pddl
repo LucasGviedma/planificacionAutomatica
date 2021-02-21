@@ -1,6 +1,6 @@
 (define (domain testdomain)
 
-   (:requirements :fluents :conditional-effects :disjunctive-preconditions)
+   (:requirements :fluents :conditional-effects :equality :disjunctive-preconditions)
 
    (:predicates (ROOM ?r)
                 (ROOMA ?ra)
@@ -12,8 +12,7 @@
                 (free ?g)
                 (carry ?g ?b))
                 
-   (:functions  (count)
-                (ballsA))
+   (:functions  (count))
    
    (:action move
        :parameters (?x ?y ?xc ?xy)
