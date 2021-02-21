@@ -1,0 +1,291 @@
+
+(:action pick-up
+    :parameters (ball4 rooma right)
+    :precondition
+    (and
+      (ball ball4)
+      (room rooma)
+      (gripper right)
+      (at-ball ball4 rooma)
+      (at-robby rooma)
+      (free right)
+    )
+    :effect
+    (and
+      (carry right ball4)
+      (not
+        (at-ball ball4 rooma)
+      )
+      (not
+        (free right)
+      )
+    )
+)
+
+  (:action move
+    :parameters (rooma roomb)
+    :precondition
+      (and
+        (room rooma)
+        (room roomb)
+        (at-robby rooma)
+      )
+    :effect
+      (and
+        (at-robby roomb)
+        (not
+          (at-robby rooma)
+        )
+      )
+  )
+
+ (:action drop
+    :parameters (ball4 roomb right)
+    :precondition
+      (and
+        (ball ball4)
+        (room roomb)
+        (gripper right)
+        (carry right ball4)
+        (at-robby roomb)
+      )
+    :effect
+      (and
+        (at-ball ball4 roomb)
+        (free right)
+        (not
+          (carry right ball4)
+        )
+      )
+  )
+
+ (:action move
+    :parameters (roomb rooma)
+    :precondition
+      (and
+        (room roomb)
+        (room rooma)
+        (at-robby roomb)
+      )
+    :effect
+      (and
+        (at-robby rooma)
+        (not
+          (at-robby roomb)
+        )
+      )
+  )
+
+ (:action pick-up
+    :parameters (ball3 rooma right)
+    :precondition
+      (and
+        (ball ball3)
+        (room rooma)
+        (gripper right)
+        (at-ball ball3 rooma)
+        (at-robby rooma)
+        (free right)
+      )
+    :effect
+      (and
+        (carry right ball3)
+        (not
+          (at-ball ball3 rooma)
+        )
+        (not
+          (free right)
+        )
+      )
+  )
+
+ (:action move
+    :parameters (rooma roomb)
+    :precondition
+      (and
+        (room rooma)
+        (room roomb)
+        (at-robby rooma)
+      )
+    :effect
+      (and
+        (at-robby roomb)
+        (not
+          (at-robby rooma)
+        )
+      )
+  )
+
+ (:action drop
+    :parameters (ball3 roomb right)
+    :precondition
+      (and
+        (ball ball3)
+        (room roomb)
+        (gripper right)
+        (carry right ball3)
+        (at-robby roomb)
+      )
+    :effect
+      (and
+        (at-ball ball3 roomb)
+        (free right)
+        (not
+          (carry right ball3)
+        )
+      )
+  )
+
+  (:action move
+    :parameters (roomb rooma)
+    :precondition
+      (and
+        (room roomb)
+        (room rooma)
+        (at-robby roomb)
+      )
+    :effect
+      (and
+        (at-robby rooma)
+        (not
+          (at-robby roomb)
+        )
+      )
+  )
+
+  (:action pick-up
+    :parameters (ball2 rooma right)
+    :precondition
+      (and
+        (ball ball2)
+        (room rooma)
+        (gripper right)
+        (at-ball ball2 rooma)
+        (at-robby rooma)
+        (free right)
+      )
+    :effect
+      (and
+        (carry right ball2)
+        (not
+          (at-ball ball2 rooma)
+        )
+        (not
+          (free right)
+        )
+      )
+  )
+
+  (:action move
+    :parameters (rooma roomb)
+    :precondition
+      (and
+        (room rooma)
+        (room roomb)
+        (at-robby rooma)
+      )
+    :effect
+      (and
+        (at-robby roomb)
+        (not
+          (at-robby rooma)
+        )
+      )
+  )
+
+  (:action drop
+    :parameters (ball2 roomb right)
+    :precondition
+      (and
+        (ball ball2)
+        (room roomb)
+        (gripper right)
+        (carry right ball2)
+        (at-robby roomb)
+      )
+    :effect
+      (and
+        (at-ball ball2 roomb)
+        (free right)
+        (not
+          (carry right ball2)
+        )
+      )
+  )
+
+  (:action move
+    :parameters (roomb rooma)
+    :precondition
+      (and
+        (room roomb)
+        (room rooma)
+        (at-robby roomb)
+      )
+    :effect
+      (and
+        (at-robby rooma)
+        (not
+          (at-robby roomb)
+        )
+      )
+  )
+
+  (:action pick-up
+    :parameters (ball1 rooma right)
+    :precondition
+      (and
+        (ball ball1)
+        (room rooma)
+        (gripper right)
+        (at-ball ball1 rooma)
+        (at-robby rooma)
+        (free right)
+      )
+    :effect
+      (and
+        (carry right ball1)
+        (not
+          (at-ball ball1 rooma)
+        )
+        (not
+          (free right)
+        )
+      )
+  )
+
+  (:action move
+    :parameters (rooma roomb)
+    :precondition
+      (and
+        (room rooma)
+        (room roomb)
+        (at-robby rooma)
+      )
+    :effect
+      (and
+        (at-robby roomb)
+        (not
+          (at-robby rooma)
+        )
+      )
+  )
+
+  (:action drop
+    :parameters (ball1 roomb right)
+    :precondition
+      (and
+        (ball ball1)
+        (room roomb)
+        (gripper right)
+        (carry right ball1)
+        (at-robby roomb)
+      )
+    :effect
+      (and
+        (at-ball ball1 roomb)
+        (free right)
+        (not
+          (carry right ball1)
+        )
+      )
+  )
