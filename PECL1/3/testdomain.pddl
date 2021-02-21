@@ -24,9 +24,9 @@
        :effect (and (at-robby ?y)
                     (not (at-robby ?x))
                     (when (and (ROOMA ?x) (ROOMB ?y))
-                          (and (increase (count) 1)))
+                          (increase (count) 1))
                     (when (and (ROOMB ?x) (ROOMA ?y))
-                          (and (decrease (count) 1)))
+                          (decrease (count) 1))
                )
    )
    

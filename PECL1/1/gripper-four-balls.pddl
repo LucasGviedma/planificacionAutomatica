@@ -12,10 +12,6 @@
           (at-ball ball1 rooma)  (at-ball ball2 rooma)
           (at-ball ball3 rooma)  (at-ball ball4 rooma)
    )
-   (:goal (and (at-ball ball1 roomb)
-               (at-ball ball2 roomb)
-               (at-ball ball3 roomb)
-               (at-ball ball4 roomb)
-          )
-   )
+
+   (:goal (and (at-ball ball1 roomb) (at-ball ball2 roomb) (at-ball ball3 roomb) (at-ball ball4 roomb)))
 )

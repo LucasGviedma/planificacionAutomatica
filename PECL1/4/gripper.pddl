@@ -1,46 +1,50 @@
 (define (domain gripper)
-   (:predicates (ROOM ?r)
-                (BALL ?b)
-                (GRIPPER ?g)
-                (at-robby ?r)
+
+   (:requirements :strips :typing :disjunctive-preconditions)
+   (:types room ball gripper)
+
+   (:predicates (at-robby ?r)
                 (at-ball ?b ?r)
                 (free ?g)
                 (carry ?g ?b))
+
    (:action move
-       :parameters (?x ?y)
-       :precondition (and (ROOM ?x)
-                          (ROOM ?y)
-                          (at-robby ?x)
-                     )
+
+       :parameters (?x ?y -room)
+
+       :precondition (and (at-robby ?x))
+
        :effect (and (at-robby ?y)
-                    (not (at-robby ?x))
-               )
+                    (not (at-robby ?x)))
    )
+
    (:action pick-up
-       :parameters (?ball ?room ?gripper)
-       :precondition (and (BALL ?ball)
-                          (ROOM ?room)
-                          (GRIPPER ?gripper)
-                          (at-ball ?ball ?room)
+
+       :parameters (?ball -ball 
+                    ?room -room 
+                    ?gripper -gripper)
+                    
+       :precondition (and (at-ball ?ball ?room)
                           (at-robby ?room)
-                          (free ?gripper)
-                     )
+                          (free ?gripper))
+
        :effect (and (carry ?gripper ?ball)
                     (not (at-ball ?ball ?room)) 
-                    (not (free ?gripper))
-               )
+                    (not (free ?gripper)))
    )
+
    (:action drop
-       :parameters (?ball ?room ?gripper)
-       :precondition (and (BALL ?ball)
-                          (ROOM ?room)
-                          (GRIPPER ?gripper)
-                          (carry ?gripper ?ball)
-                          (at-robby ?room)
-                     )
+
+       :parameters (?ball -ball 
+                    ?room -room 
+                    ?gripper -gripper)
+                    
+       :precondition (and (carry ?gripper ?ball)
+                          (at-robby ?room))
+
        :effect (and (at-ball ?ball ?room)
                     (free ?gripper)
-                    (not (carry ?gripper ?ball))
-               )
+                    (not (carry ?gripper ?ball)))
    )
+
 )

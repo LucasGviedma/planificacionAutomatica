@@ -1,4 +1,7 @@
 (define (domain gripper)
+
+   (:requirements :disjunctive-preconditions)
+
    (:predicates (ROOM ?r)
                 (BALL ?b)
                 (GRIPPER ?g)
@@ -6,6 +9,7 @@
                 (at-ball ?b ?r)
                 (free ?g)
                 (carry ?g ?b))
+
    (:action move
        :parameters (?x ?y)
        :precondition (and (ROOM ?x)
@@ -16,6 +20,7 @@
                     (not (at-robby ?x))
                )
    )
+
    (:action pick-up
        :parameters (?ball ?room ?gripper)
        :precondition (and (BALL ?ball)
@@ -30,6 +35,7 @@
                     (not (free ?gripper))
                )
    )
+   
    (:action drop
        :parameters (?ball ?room ?gripper)
        :precondition (and (BALL ?ball)

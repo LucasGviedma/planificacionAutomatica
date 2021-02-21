@@ -1,21 +1,29 @@
 (define (problem gripper-four-balls)
    (:domain gripper)
-   (:objects rooma roomb
-             ball1 ball2 ball3 ball4
-             left right)
-   (:init (ROOM rooma)          (ROOM roomb)
-          (BALL ball1)          (BALL ball2)
-          (BALL ball3)          (BALL ball4)
-          (GRIPPER left)        (GRIPPER right)
-          (at-robby rooma)
-          (free left)          (free right)
+   
+   (:objects rooma roomb -room
+             ball1 ball2 ball3 ball4 ball5 ball6 -ball
+             left right -gripper)
+             
+   (:init (at-robby rooma)
+          (free left)            (free right)
           (at-ball ball1 rooma)  (at-ball ball2 rooma)
           (at-ball ball3 rooma)  (at-ball ball4 rooma)
+          (at-ball ball5 rooma)  (at-ball ball6 rooma)
    )
-   (:goal (and (at-ball ball1 roomb)
-               (at-ball ball2 roomb)
-               (at-ball ball3 roomb)
-               (at-ball ball4 roomb)
-          )
+
+   (:goal (or (and (at-ball ball1 roomb) (at-ball ball2 roomb) (at-ball ball3 roomb) (at-ball ball4 roomb) (at-ball ball5 roomb) (at-ball ball6 rooma))
+              (and (at-ball ball1 roomb) (at-ball ball2 roomb) (at-ball ball3 roomb) (at-ball ball4 roomb) (at-ball ball5 rooma) (at-ball ball6 roomb))
+              (and (at-ball ball1 roomb) (at-ball ball2 roomb) (at-ball ball3 roomb) (at-ball ball4 rooma) (at-ball ball5 roomb) (at-ball ball6 roomb))
+              (and (at-ball ball1 roomb) (at-ball ball2 roomb) (at-ball ball3 rooma) (at-ball ball4 roomb) (at-ball ball5 roomb) (at-ball ball6 roomb)) 
+              (and (at-ball ball1 roomb) (at-ball ball2 rooma) (at-ball ball3 roomb) (at-ball ball4 roomb) (at-ball ball5 roomb) (at-ball ball6 roomb)) 
+              (and (at-ball ball1 rooma) (at-ball ball2 roomb) (at-ball ball3 roomb) (at-ball ball4 roomb) (at-ball ball5 roomb) (at-ball ball6 roomb))
+              
+              (and (at-ball ball1 roomb) (at-ball ball2 rooma) (at-ball ball3 rooma) (at-ball ball4 rooma) (at-ball ball5 rooma) (at-ball ball6 rooma))
+              (and (at-ball ball1 rooma) (at-ball ball2 roomb) (at-ball ball3 rooma) (at-ball ball4 rooma) (at-ball ball5 rooma) (at-ball ball6 rooma))
+              (and (at-ball ball1 rooma) (at-ball ball2 rooma) (at-ball ball3 roomb) (at-ball ball4 rooma) (at-ball ball5 rooma) (at-ball ball6 rooma))
+              (and (at-ball ball1 rooma) (at-ball ball2 rooma) (at-ball ball3 rooma) (at-ball ball4 roomb) (at-ball ball5 rooma) (at-ball ball6 rooma)) 
+              (and (at-ball ball1 rooma) (at-ball ball2 rooma) (at-ball ball3 rooma) (at-ball ball4 rooma) (at-ball ball5 roomb) (at-ball ball6 rooma)) 
+              (and (at-ball ball1 rooma) (at-ball ball2 rooma) (at-ball ball3 rooma) (at-ball ball4 rooma) (at-ball ball5 rooma) (at-ball ball6 roomb)))
    )
 )
