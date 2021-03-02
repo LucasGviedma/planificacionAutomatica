@@ -1,26 +1,18 @@
-(define (problem p-robotPlanningMotion) 
+(define (problem p-planetaryExploration) 
 
-    (:domain d-robotPlanningMotion)
+    (:domain d-planetaryExploration)
     (:objects 
-        room1 room2 room3 room4 corridor1 - room
-        box1 box2 - box
+        cord1 cord2 cord3 cord4 cord5
     )
 
     (:init
-        (SHAKEY_FLOOR)
-        (SHAKEY_IN room1)
-        (IN room1 box1)
-        (IN room1 box2)
-        (DOOR room1 corridor1)
-        (DOOR room2 corridor1)
-        (DOOR room3 corridor1)
-        (DOOR room4 corridor1)
+        (IN cord1)
     )
 
-    (:goal (and (LIGHT room1)
-                (LIGHT room2)
-                (LIGHT room3)
-                (LIGHT room4)
+    (:goal (and (COMMUNICATION cord3)
+                (ANALYSIS cord4)
+                (COMMUNICATION cord2)
+                (DRILL cord1)
     ))
 
 )
