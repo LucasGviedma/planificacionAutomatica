@@ -1,5 +1,5 @@
-(define (problem gripper-four-balls)
-   (:domain gripper)
+(define (problem p-gripper)
+   (:domain d-gripper)
    (:objects rooma roomb
              ball1 ball2 ball3 ball4
              left right)

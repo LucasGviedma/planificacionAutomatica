@@ -1,4 +1,4 @@
-(define (domain gripper)
+(define (domain d-gripper)
 
    (:requirements :strips :typing :disjunctive-preconditions)
    (:types room ball gripper)

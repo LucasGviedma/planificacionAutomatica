@@ -1,5 +1,5 @@
-(define (problem blocks-world)
-    (:domain blocks)
+(define (problem p-blocksworld)
+    (:domain d-blocksworld)
     (:objects C D E F B I J A N O K M P H G L Q - block)
     (:init (handempty)
     

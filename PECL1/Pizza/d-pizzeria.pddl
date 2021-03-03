@@ -3,73 +3,115 @@
      :negative-preconditions :disjunctive-preconditions)
 
     (:types
-        dough topping pizza motorcycle dish destination
+        dough motorcycle dish destination
     )
 
     (:predicates
+        
         (KNEADED ?d - dough)
-        (ADDED ?t - topping ?d - dough)
-        (BAKED ?d - dough)
-        (COOKED ?d - dish)
+        (ADDED_T ?d - dough)
+        (BAKED   ?d - dough)
+        (COOKED  ?d - dish)
+
+        (PREPARED  ?d - (either dish dough))
+
+        (READY  ?m - motorcycle)
+        (FULL   ?m - motorcycle)
         (LOADED ?m - motorcycle ?d - (either dish dough))
+
         (IN ?m - motorcycle ?d - destination)
-        (DELIVERED ?m ?d)
-        (COLLECTED ?d)
-        (READY ?m)
+        (DELIVERED ?d - (either dish dough) ?des - destination)
+        (COLLECTED ?d - (either dish dough) ?des - destination)
     )
 
     (:action kneadDough
+        
         :parameters (?d - dough)
-        :precondition (and (not (KNEADED ?d)) (not (BAKED ?d)))
+
+        :precondition (and (not (KNEADED ?d)))
+
         :effect (and (KNEADED ?d))
     )
 
     (:action addToping
-        :parameters (?t - topping ?d - dough)
-        :precondition (and (KNEADED ?d) (not (BAKED ?d)) (not (ADDED ?t ?d)))
-        :effect (and (ADDED ?t ?d))
+        
+        :parameters (?d - dough)
+
+        :precondition (and (KNEADED ?d) (not (ADDED_T ?d)))
+
+        :effect (and (ADDED_T ?d))
     )
     
     (:action bakeDough
+        
         :parameters (?d - dough)
-        :precondition (and (KNEADED ?d) (not (BAKED ?d)))
-        :effect (and (BAKED ?d))
+
+        :precondition (and (KNEADED ?d) (ADDED_T ?d) (not (BAKED ?d)))
+
+        :effect (and (BAKED ?d) (PREPARED ?d))
     )
 
     (:action cookDish
+        
         :parameters (?d - dish)
+
         :precondition (and (not (COOKED ?d)))
-        :effect (and (COOKED ?d))
+
+        :effect (and (COOKED ?d) (PREPARED ?d))
     )
 
-    (:action load
-        :parameters (?m - motorcycle ?d - (either dish dough))
-        :precondition (and (READY ?m) (or (COOKED ?d) (BAKED ?d)))
-        :effect (and (LOADED ?m ?d) (not (READY ?m)))
+    (:action loadDough
+        
+        :parameters (?m - motorcycle ?d -  dough)
+
+        :precondition (and (not (FULL ?m)) (BAKED ?d) (PREPARED ?d))
+
+        :effect (and (LOADED ?m ?d) (FULL ?m) (not (PREPARED ?d)))
+    )
+
+    (:action loadDish
+        
+        :parameters (?m - motorcycle ?d - dish)
+
+        :precondition (and (not (FULL ?m)) (COOKED ?d) (PREPARED ?d))
+
+        :effect (and (LOADED ?m ?d) (FULL ?m) (not (PREPARED ?d)))
     )
 
     (:action depart
-        :parameters (?m - motorcycle ?di ?df - destination)
-        :precondition (and (IN ?m ?di) (not (IN ?m ?df)))
-        :effect (and (IN ?m ?df) (not (IN ?m ?di)))
+        
+        :parameters (?m - motorcycle ?df - destination)
+
+        :precondition (and (not (IN ?m ?df)) (READY ?m) (FULL ?m))
+        
+        :effect (and (IN ?m ?df) (not (READY ?m)))
     )
 
     (:action return
+        
         :parameters (?m - motorcycle ?d - destination)
+
         :precondition (and (IN ?m ?d))
+
         :effect (and (READY ?m) (not (IN ?m ?d)))
     )
 
     (:action collectOrder
+        
         :parameters (?m - motorcycle ?des - destination ?d - (either dish dough))
-        :precondition (and (LOADED ?m ?d) (IN ?m ?des) (not (COLLECTED ?d)) (not (DELIVERED ?d)))
-        :effect (and (COLLECTED ?d))
+
+        :precondition (and (LOADED ?m ?d) (IN ?m ?des) (not (COLLECTED ?d ?des)) (not (DELIVERED ?d ?des)))
+
+        :effect (and (COLLECTED ?d ?des))
     )
 
     (:action deliverOrder
+        
         :parameters (?m - motorcycle ?des - destination ?d - (either dish dough))
-        :precondition (and (LOADED ?m ?d) (IN ?m ?des) (COLLECTED ?d) (not (DELIVERED ?d)))
-        :effect (and (DELIVERED ?d) (not (LOADED ?m ?d)))
+
+        :precondition (and (LOADED ?m ?d) (IN ?m ?des) (COLLECTED ?d ?des) (not (DELIVERED ?d ?des)))
+        
+        :effect (and (DELIVERED ?d ?des) (not (FULL ?m)) (not (LOADED ?m ?d)))
     )
     
     

@@ -1,5 +1,5 @@
-(define (problem blocks-world)
-    (:domain blocks)
+(define (problem p-blocksworld)
+    (:domain d-blocksworld)
     (:objects block1 block2 block3)
     (:init (handempty)
            (clear block1) (clear block2) (clear block3)
