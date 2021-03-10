@@ -1,13 +1,14 @@
 (define  (domain d-pizzeria)
-    (:requirements :strips :typing
-     :negative-preconditions :disjunctive-preconditions)
+    (:requirements :strips :typing :negative-preconditions :disjunctive-preconditions :equality)
 
     (:types
-        dough motorcycle dish destination
+        dough motorcycle dish location
     )
 
     (:predicates
         
+        (PIZZERIA ?location)
+
         (KNEADED ?d - dough)
         (ADDED_T ?d - dough)
         (BAKED   ?d - dough)
@@ -15,13 +16,12 @@
 
         (PREPARED  ?d - (either dish dough))
 
-        (READY  ?m - motorcycle)
         (FULL   ?m - motorcycle)
         (LOADED ?m - motorcycle ?d - (either dish dough))
 
-        (IN ?m - motorcycle ?d - destination)
-        (DELIVERED ?d - (either dish dough) ?des - destination)
-        (COLLECTED ?d - (either dish dough) ?des - destination)
+        (IN ?m - motorcycle ?loc - location)
+        (DELIVERED ?d - (either dish dough) ?loc - location)
+        (COLLECTED ?d - (either dish dough) ?loc - location)
     )
 
     (:action kneadDough
@@ -46,7 +46,7 @@
         
         :parameters (?d - dough)
 
-        :precondition (and (KNEADED ?d) (ADDED_T ?d) (not (BAKED ?d)))
+        :precondition (and (ADDED_T ?d) (not (BAKED ?d)))
 
         :effect (and (BAKED ?d) (PREPARED ?d))
     )
@@ -60,63 +60,42 @@
         :effect (and (COOKED ?d) (PREPARED ?d))
     )
 
-    (:action loadDough
+    (:action load
         
-        :parameters (?m - motorcycle ?d -  dough)
+        :parameters (?m - motorcycle ?d - (either dish dough) ?loc - location)
 
-        :precondition (and (not (FULL ?m)) (BAKED ?d) (PREPARED ?d))
+        :precondition (and (PREPARED ?d) 
+                           (IN ?m ?loc) (PIZZERIA ?loc) (not (FULL ?m)) (not (LOADED ?m ?d)))
 
         :effect (and (LOADED ?m ?d) (FULL ?m) (not (PREPARED ?d)))
     )
 
-    (:action loadDish
+    (:action move
         
-        :parameters (?m - motorcycle ?d - dish)
+        :parameters (?m - motorcycle ?li ?lf - location)
 
-        :precondition (and (not (FULL ?m)) (COOKED ?d) (PREPARED ?d))
-
-        :effect (and (LOADED ?m ?d) (FULL ?m) (not (PREPARED ?d)))
-    )
-
-    (:action depart
-        
-        :parameters (?m - motorcycle ?df - destination)
-
-        :precondition (and (not (IN ?m ?df)) (READY ?m) (FULL ?m))
-        
-        :effect (and (IN ?m ?df) (not (READY ?m)))
-    )
-
-    (:action return
-        
-        :parameters (?m - motorcycle ?d - destination)
-
-        :precondition (and (IN ?m ?d))
-
-        :effect (and (READY ?m) (not (IN ?m ?d)))
+        :precondition (and (not (= ?li ?lf)) (IN ?m ?li))
+    
+        :effect (and (not (IN ?m ?li)) (IN ?m ?lf))
     )
 
     (:action collectOrder
         
-        :parameters (?m - motorcycle ?des - destination ?d - (either dish dough))
+        :parameters (?m - motorcycle ?loc - location ?d - (either dish dough))
 
-        :precondition (and (LOADED ?m ?d) (IN ?m ?des) (not (COLLECTED ?d ?des)) (not (DELIVERED ?d ?des)))
+        :precondition (and (LOADED ?m ?d) (IN ?m ?loc) (not (COLLECTED ?d ?loc)))
 
-        :effect (and (COLLECTED ?d ?des))
+        :effect (and (COLLECTED ?d ?loc))
     )
 
     (:action deliverOrder
         
-        :parameters (?m - motorcycle ?des - destination ?d - (either dish dough))
+        :parameters (?m - motorcycle ?loc - location ?d - (either dish dough))
 
-        :precondition (and (LOADED ?m ?d) (IN ?m ?des) (COLLECTED ?d ?des) (not (DELIVERED ?d ?des)))
+        :precondition (and (LOADED ?m ?d) (IN ?m ?loc) (COLLECTED ?d ?loc) (not (DELIVERED ?d ?loc)))
         
-        :effect (and (DELIVERED ?d ?des) (not (FULL ?m)) (not (LOADED ?m ?d)))
+        :effect (and (DELIVERED ?d ?loc) (not (FULL ?m)) (not (LOADED ?m ?d)))
     )
-    
-    
-    
-    
-
 
 )
+
