@@ -1,4 +1,4 @@
-(define (domain gripper)
+(define (domain d-gripper)
 
    (:predicates (ROOM ?r)
                 (BALL ?b)
