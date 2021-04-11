@@ -1,61 +1,115 @@
 (define (domain d-planetaryExploration)
-    (:requirements :strips :equality :negative-preconditions :disjunctive-preconditions)
+    (:requirements :strips :equality :typing :negative-preconditions :constraints :preferences :fluents :durative-actions)
+
+    (:types
+        coord rover_speed rover)
+
+    (:functions 
+     			(max_battery ?r - rover) (current_battery ?r - rover) (low_battery ?r - rover) 
+                
+                (speed    ?s - rover_speed ?r - rover ) 
+                (distance ?ci ?cf - coord)
+
+                (dur_pict) (pict_battery_use)
+                (dur_dril) (dril_battery_use)
+                (dur_comm) (comm_battery_use)
+                (dur_anal) (anal_battery_use)
+                (dur_rech) 
+    )
+
     (:predicates
-        (PICTURE ?coord)
-        (DRILL ?coord)
-        (COMMUNICATION ?coord)
-        (ANALYSIS ?coord)
-        (IN ?coord)
+        (PICTURE       ?c - coord ?rover - rover)
+        (DRILL         ?c - coord ?rover - rover)
+        (COMMUNICATION ?c - coord ?rover - rover)
+        (ANALYSIS      ?c - coord ?rover - rover)
+        (IN            ?c - coord ?rover - rover) 
+        (DANGER        ?c - coord) 
     )
 
-    (:action go_from_to
+    (:durative-action go_from_to
         
-        :parameters (?coordi ?coordf)
+        :parameters (?ci ?cf - coord ?s - rover_speed ?r - rover)
 
-        :precondition (and (not (= ?coordi ?coordf))
-                           (IN ?coordi))
+        :duration (= ?duration (/ (distance ?ci ?cf) (speed ?s ?r)))
+
+        :condition (at start (and (not (= ?ci ?cf))
+                                  (IN ?ci ?r)
+                                  (>  (current_battery ?r) (low_battery ?r))
+                               	  (>= (current_battery ?r) (+ (distance ?ci ?cf) (speed ?s ?r)))))
         
-        :effect (and (not (IN ?coordi)) 
-                     (IN ?coordf))
+        :effect (and (at start (not (IN ?ci ?r)))
+                     (at end   (and (IN ?cf ?r)
+                                    (decrease (current_battery ?r) (+ (distance ?ci ?cf) (speed ?s ?r))))))
     )
 
-    (:action take_pic
+   (:durative-action take_pic
         
-        :parameters (?coord)
+        :parameters (?c - coord ?r - rover)
 
-        :precondition (and (IN ?coord) 
-                           (not (PICTURE ?coord)))
-       
-        :effect (and (PICTURE ?coord))
+        :duration (= ?duration (dur_pict))
+
+        :condition (and (at start (and (not (PICTURE ?c ?r))
+                                       (> (current_battery ?r) (low_battery ?r))
+                                       (>= (- (current_battery ?r) (pict_battery_use)) 0)))
+                        (over all (IN ?c ?r)))
+        
+        :effect (at end (and (PICTURE ?c ?r) (decrease (current_battery ?r) (pict_battery_use))))
     )
 
-    (:action drill
+    (:durative-action drill
         
-        :parameters (?coord)
+        :parameters (?c - coord ?r - rover)
 
-        :precondition (and (IN ?coord) 
-                           (not (DRILL ?coord)))
-       
-        :effect (and (DRILL ?coord))
+        :duration (= ?duration (dur_dril))
+
+        :condition (and (at start (and (not (DRILL ?c ?r))
+                                	   (> (current_battery ?r) (low_battery ?r))
+                                	   (>= (- (current_battery ?r) (dril_battery_use)) 0)))
+                        (over all (IN ?c ?r)))
+        
+        :effect (at end (and (DRILL ?c ?r) (decrease (current_battery ?r) (dril_battery_use))))
     )
 
-    (:action communicate
+    (:durative-action communicate
         
-        :parameters (?coord)
+        :parameters (?c - coord ?r - rover)
 
-        :precondition (and (IN ?coord) 
-                           (not (COMMUNICATION ?coord)))
-       
-        :effect (and (COMMUNICATION ?coord))
+        :duration (= ?duration (dur_comm))
+
+        :condition (and (at start (and (IN ?c ?r) 
+                                       (not (COMMUNICATION ?c ?r))
+                                       (> (current_battery ?r) (low_battery ?r))
+                                       (>= (- (current_battery ?r) (comm_battery_use)) 0)))
+                        (over all (IN ?c ?r)))
+        
+        :effect (at end (and (COMMUNICATION ?c ?r) (decrease (current_battery ?r) (comm_battery_use))))
     )
 
-    (:action analyse
+    (:durative-action analyse
         
-        :parameters (?coord)
+        :parameters (?c - coord ?r - rover)
 
-        :precondition (and (IN ?coord) 
-                           (not (ANALYSIS ?coord)))
-       
-        :effect (and (ANALYSIS ?coord))
+        :duration (= ?duration (dur_anal))
+
+        :condition (and (at start (and (IN ?c ?r) 
+                                       (not (ANALYSIS ?c ?r))
+                                       (> (current_battery ?r) (low_battery ?r))
+                                       (>= (- (current_battery ?r) (anal_battery_use)) 0)))
+                        (over all (IN ?c ?r)))
+        
+        :effect (at end (and (ANALYSIS ?c ?r) (decrease (current_battery ?r) (anal_battery_use))))
     )
+
+    (:durative-action recharge
+        
+        :parameters (?c - coord ?r - rover)
+
+        :duration (= ?duration (dur_rech))
+
+        :condition (and (at start (<= (current_battery ?r) (low_battery ?r)))
+                        (over all (IN ?c ?r)))
+        
+        :effect (at end (increase (current_battery ?r) (- (max_battery ?r) (current_battery ?r))))
+    )
+
 )

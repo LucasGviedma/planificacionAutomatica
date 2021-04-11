@@ -1,6 +1,6 @@
 (define (domain d-gripper)
 
-   (:requirements :strips :typing :disjunctive-preconditions :fluents :durative-actions)
+   (:requirements :typing :fluents :durative-actions :preferences :constraints)
    (:types room ball gripper)
 
    (:functions (dur-ball ?b - ball)
@@ -18,7 +18,7 @@
        
        :duration (= ?duration 5)
 
-       :condition (at start (and (at-robby ?x)))
+       :condition (at start (at-robby ?x))
 
        :effect (and (at start (not (at-robby ?x)))
                     (at end (at-robby ?y)))
@@ -32,13 +32,13 @@
        
        :duration (= ?duration (dur-ball ?ball))
 
-       :condition (at start (and (at-ball ?ball ?room)
-                            (at-robby ?room)
-                            (free ?gripper)))
+       :condition (and (at start (and (at-ball ?ball ?room)
+                                      (free ?gripper)))
+                       (over all (at-robby ?room)))
 
-       :effect (at start (and (carry ?gripper ?ball)
-                         (not (at-ball ?ball ?room)) 
-                         (not (free ?gripper))))
+       :effect (and (at start (and (not (at-ball ?ball ?room)) 
+                                   (not (free ?gripper))))
+                    (at end (carry ?gripper ?ball)))
    )
 
    (:durative-action drop
@@ -49,13 +49,13 @@
        
        :duration (= ?duration (dur-ball ?ball))
 
-       :condition (at start (and (carry ?gripper ?ball)
-                            (at-robby ?room)))
+       :condition (and (at start (carry ?gripper ?ball))
+                       (over all (at-robby ?room)))
        
 
-       :effect (at end (and (at-ball ?ball ?room)
-                       (free ?gripper)
-                       (not (carry ?gripper ?ball))))
+       :effect (and (at end (and (at-ball ?ball ?room)
+                                 (free ?gripper)))
+                    (at start (not (carry ?gripper ?ball))))
    )
 
 )

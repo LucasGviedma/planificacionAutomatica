@@ -1,100 +1,149 @@
 (define  (domain d-pizzeria)
-    (:requirements :strips :typing :negative-preconditions :disjunctive-preconditions :equality)
+    (:requirements :typing :fluents :negative-preconditions :equality :durative-actions)
 
     (:types
-        dough motorcycle dish location
+        pizza moto plato casa restaurante gasolinera
+    )
+
+    (:functions 
+        
+        (capacidad_pedidos ?m - moto)
+        (carga_actual ?m - moto)
+        (velocidad ?m - moto)
+
+        (capacidad_gasolina ?m - moto)
+        (gasolina_actual ?m - moto)
+        (umbral_gasolina ?m - moto)
+
+        (dur_amasado)(dur_cobrado)
+        (dur_topping)(dur_hornead) 
+        (dur_entrega)(dur_cocinad ?pl - plato)
+        (dur_cargado)(dur_gasolin)
+
+        (distancia ?li ?lf - (either casa restaurante gasolinera)) (gasolina_necesaria ?li ?lf - (either casa restaurante gasolinera))
+        
     )
 
     (:predicates
-        
-        (PIZZERIA ?location)
 
-        (KNEADED ?d - dough)
-        (ADDED_T ?d - dough)
-        (BAKED   ?d - dough)
-        (COOKED  ?d - dish)
+        (AMASADA  ?pi - pizza)
+        (TOPPING  ?pi - pizza)
+        (HORNEADA ?pi - pizza)
+        (COCINADO ?pl - plato)
 
-        (PREPARED  ?d - (either dish dough))
+        (PREPARADO ?p - (either plato pizza))
+        (CARGADO   ?m - moto ?p - (either plato pizza))
 
-        (FULL   ?m - motorcycle)
-        (LOADED ?m - motorcycle ?d - (either dish dough))
+        (EN ?m - moto ?l - (either casa restaurante gasolinera))
 
-        (IN ?m - motorcycle ?loc - location)
-        (DELIVERED ?d - (either dish dough) ?loc - location)
-        (COLLECTED ?d - (either dish dough) ?loc - location)
+        (ENTREGADO ?p - (either plato pizza) ?c - casa)
+        (COBRADO   ?p - (either plato pizza) ?c - casa)
     )
 
-    (:action kneadDough
+    (:durative-action amasar
         
-        :parameters (?d - dough)
+        :parameters (?pi - pizza)
 
-        :precondition (and (not (KNEADED ?d)))
+        :duration (= ?duration (dur_amasado))
 
-        :effect (and (KNEADED ?d))
+        :condition (at start (not (AMASADA ?pi)))
+
+        :effect (at end (AMASADA ?pi))
     )
-
-    (:action addToping
+ 
+    (:durative-action anadir_toppings
         
-        :parameters (?d - dough)
+        :parameters (?pi - pizza)
 
-        :precondition (and (KNEADED ?d) (not (ADDED_T ?d)))
+        :duration (= ?duration (dur_topping))
 
-        :effect (and (ADDED_T ?d))
+        :condition (at start (and (AMASADA ?pi) (not (TOPPING ?pi))))
+
+        :effect (at end (TOPPING ?pi))
     )
     
-    (:action bakeDough
+    (:durative-action hornear
         
-        :parameters (?d - dough)
+        :parameters (?pi - pizza)
 
-        :precondition (and (ADDED_T ?d) (not (BAKED ?d)))
+        :duration (= ?duration (dur_hornead))
 
-        :effect (and (BAKED ?d) (PREPARED ?d))
+        :condition (at start (and (TOPPING ?pi) (not (HORNEADA ?pi))))
+
+        :effect (at end (and (HORNEADA ?pi) (PREPARADO ?pi)))
     )
 
-    (:action cookDish
+    (:durative-action cocinar
         
-        :parameters (?d - dish)
+        :parameters (?pl - plato)
 
-        :precondition (and (not (COOKED ?d)))
+        :duration (= ?duration (dur_cocinad ?pl))
 
-        :effect (and (COOKED ?d) (PREPARED ?d))
+        :condition (at start (not (COCINADO ?pl)))
+
+        :effect (at end (and (COCINADO ?pl) (PREPARADO ?pl)))
     )
 
-    (:action load
+    (:durative-action cargar
         
-        :parameters (?m - motorcycle ?d - (either dish dough) ?loc - location)
+        :parameters (?m - moto ?pi - (either plato pizza) ?r - restaurante)
 
-        :precondition (and (PREPARED ?d) 
-                           (IN ?m ?loc) (PIZZERIA ?loc) (not (FULL ?m)) (not (LOADED ?m ?d)))
+        :duration (= ?duration (dur_cargado))
 
-        :effect (and (LOADED ?m ?d) (FULL ?m) (not (PREPARED ?d)))
+        :condition (and (at start (and (PREPARADO ?pi) 
+                                  (>= (capacidad_pedidos ?m) (+ 1 (carga_actual ?m)))
+                                  (not (CARGADO ?m ?pi))))
+                        (over all (EN ?m ?r)))
+
+        :effect (at end (and (CARGADO ?m ?pi) (increase (carga_actual ?m) 1) (not (PREPARADO ?pi))))
     )
 
-    (:action move
+    (:durative-action desplazar
         
-        :parameters (?m - motorcycle ?li ?lf - location)
+        :parameters (?m - moto ?li ?lf - (either restaurante casa gasolinera))
 
-        :precondition (and (not (= ?li ?lf)) (IN ?m ?li))
+        :duration (= ?duration (* 3600 (/ (distancia ?li ?lf) (velocidad ?m))))
+
+        :condition (at start (and (not (= ?li ?lf)) (EN ?m ?li) (> (gasolina_actual ?m) 20) (>= (gasolina_actual ?m) (gasolina_necesaria ?li ?lf ))))
     
-        :effect (and (not (IN ?m ?li)) (IN ?m ?lf))
+        :effect (and (at start (not (EN ?m ?li))) 
+                     (at end (and (EN ?m ?lf) (decrease (gasolina_actual ?m) (gasolina_necesaria ?li ?lf )))))
     )
 
-    (:action collectOrder
+    (:durative-action cobrar
         
-        :parameters (?m - motorcycle ?loc - location ?d - (either dish dough))
+        :parameters (?m - moto ?c - casa ?p - (either plato pizza))
 
-        :precondition (and (LOADED ?m ?d) (IN ?m ?loc) (not (COLLECTED ?d ?loc)))
+        :duration (= ?duration dur_cobrado)
 
-        :effect (and (COLLECTED ?d ?loc))
+        :condition (and (at start (and (CARGADO ?m ?p) (not (COBRADO ?p ?c))))
+                        (over all (EN ?m ?c)))
+
+        :effect (at end (COBRADO ?p ?c))
     )
 
-    (:action deliverOrder
+    (:durative-action entregar
         
-        :parameters (?m - motorcycle ?loc - location ?d - (either dish dough))
+        :parameters (?m - moto ?c - casa ?p - (either plato pizza))
 
-        :precondition (and (LOADED ?m ?d) (IN ?m ?loc) (COLLECTED ?d ?loc) (not (DELIVERED ?d ?loc)))
+        :duration (= ?duration (dur_entrega))
+
+        :condition (and (at start (and (CARGADO ?m ?p) (COBRADO ?p ?c) (not (ENTREGADO ?p ?c))))
+                        (over all (EN ?m ?c)))
         
-        :effect (and (DELIVERED ?d ?loc) (not (FULL ?m)) (not (LOADED ?m ?d)))
+        :effect (at end (and (ENTREGADO ?p ?c) (decrease (carga_actual ?m) 1) (not (CARGADO ?m ?p))))
+    )
+
+    (:durative-action echar_gasolina
+        
+        :parameters (?m - moto ?g - gasolinera)
+
+        :duration (= ?duration (dur_gasolin))
+
+        :condition (and (at start (<= (gasolina_actual ?m) 20))
+                        (over all (EN ?m ?g)))
+        
+        :effect (at end (increase (gasolina_actual ?m) (- (capacidad_gasolina ?m) (gasolina_actual ?m))))
     )
 
 )
