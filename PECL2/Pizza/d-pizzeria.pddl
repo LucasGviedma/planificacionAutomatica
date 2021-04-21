@@ -2,7 +2,11 @@
     (:requirements :typing :fluents :negative-preconditions :equality :durative-actions)
 
     (:types
-        pizza moto plato casa restaurante gasolinera
+        moto
+        comida
+        lugar
+        pizza plato - comida
+        casa restaurante gasolinera - lugar
     )
 
     (:functions 
@@ -13,14 +17,14 @@
 
         (capacidad_gasolina ?m - moto)
         (gasolina_actual ?m - moto)
-        (umbral_gasolina ?m - moto)
+        (umbral_gasolina)
 
         (dur_amasado)(dur_cobrado)
         (dur_topping)(dur_hornead) 
         (dur_entrega)(dur_cocinad ?pl - plato)
         (dur_cargado)(dur_gasolin)
 
-        (distancia ?li ?lf - (either casa restaurante gasolinera)) (gasolina_necesaria ?li ?lf - (either casa restaurante gasolinera))
+        (distancia ?li ?lf - lugar) (gasolina_necesaria ?li ?lf - lugar)
         
     )
 
@@ -31,13 +35,13 @@
         (HORNEADA ?pi - pizza)
         (COCINADO ?pl - plato)
 
-        (PREPARADO ?p - (either plato pizza))
-        (CARGADO   ?m - moto ?p - (either plato pizza))
+        (PREPARADO ?p - comida)
+        (CARGADO   ?m - moto ?p - comida)
 
-        (EN ?m - moto ?l - (either casa restaurante gasolinera))
+        (EN ?m - moto ?l - lugar)
 
-        (ENTREGADO ?p - (either plato pizza) ?c - casa)
-        (COBRADO   ?p - (either plato pizza) ?c - casa)
+        (ENTREGADO ?p - comida ?c - casa)
+        (COBRADO   ?p - comida ?c - casa)
     )
 
     (:durative-action amasar
@@ -86,7 +90,7 @@
 
     (:durative-action cargar
         
-        :parameters (?m - moto ?pi - (either plato pizza) ?r - restaurante)
+        :parameters (?m - moto ?pi - comida ?r - restaurante)
 
         :duration (= ?duration (dur_cargado))
 
@@ -100,11 +104,11 @@
 
     (:durative-action desplazar
         
-        :parameters (?m - moto ?li ?lf - (either restaurante casa gasolinera))
+        :parameters (?m - moto ?li ?lf - lugar)
 
         :duration (= ?duration (* 3600 (/ (distancia ?li ?lf) (velocidad ?m))))
 
-        :condition (at start (and (not (= ?li ?lf)) (EN ?m ?li) (> (gasolina_actual ?m) 20) (>= (gasolina_actual ?m) (gasolina_necesaria ?li ?lf ))))
+        :condition (at start (and (not (= ?li ?lf)) (EN ?m ?li) (> (gasolina_actual ?m) (umbral_gasolina)) (>= (gasolina_actual ?m) (gasolina_necesaria ?li ?lf ))))
     
         :effect (and (at start (not (EN ?m ?li))) 
                      (at end (and (EN ?m ?lf) (decrease (gasolina_actual ?m) (gasolina_necesaria ?li ?lf )))))
@@ -112,9 +116,9 @@
 
     (:durative-action cobrar
         
-        :parameters (?m - moto ?c - casa ?p - (either plato pizza))
+        :parameters (?m - moto ?c - casa ?p - comida)
 
-        :duration (= ?duration dur_cobrado)
+        :duration (= ?duration (dur_cobrado))
 
         :condition (and (at start (and (CARGADO ?m ?p) (not (COBRADO ?p ?c))))
                         (over all (EN ?m ?c)))
@@ -124,7 +128,7 @@
 
     (:durative-action entregar
         
-        :parameters (?m - moto ?c - casa ?p - (either plato pizza))
+        :parameters (?m - moto ?c - casa ?p - comida)
 
         :duration (= ?duration (dur_entrega))
 
@@ -140,7 +144,7 @@
 
         :duration (= ?duration (dur_gasolin))
 
-        :condition (and (at start (<= (gasolina_actual ?m) 20))
+        :condition (and (at start (<= (gasolina_actual ?m) (umbral_gasolina)))
                         (over all (EN ?m ?g)))
         
         :effect (at end (increase (gasolina_actual ?m) (- (capacidad_gasolina ?m) (gasolina_actual ?m))))

@@ -17,7 +17,7 @@
 
         (= (capacidad_pedidos vespa) 3) (= (carga_actual vespa) 0)
 
-        (= (capacidad_gasolina vespa) 180) (= (gasolina_actual vespa) 180) (= (umbral_gasolina vespa) 20) 
+        (= (capacidad_gasolina vespa) 180) (= (gasolina_actual vespa) 180) (= (umbral_gasolina) 20) 
 
         (= (dur_amasado) 3) (= (dur_topping) 1) (= (dur_hornead) 15) (= (dur_entrega) 1) (= (dur_cargado)  1)
         (= (dur_cobrado) 1) (= (dur_cocinad lasagna) 40) (= (dur_cocinad macarrones) 35) (= (dur_gasolin) 10)

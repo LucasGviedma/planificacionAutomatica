@@ -11,10 +11,10 @@
           (= (dur-ball z1) 7)   (= (dur-ball z2) 3)
    )
 
-   (:goal (and (at-ball z1 livingroom) (at-ball z2 livingroom) (preference (at-robby bathroom)))
+   (:goal (and (at-ball z1 livingroom) (at-ball z2 livingroom))
    )
 
-   (:constraints (and (preference (at end (at-robby livingroom)))
+   (:constraints (and ;(preference (at end (at-robby livingroom)))
                       (preference (sometime (at-robby bathroom)))))
 )
 
