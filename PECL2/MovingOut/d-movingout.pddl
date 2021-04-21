@@ -45,6 +45,4 @@
      :effect (at end (not (in ?o ?c)))
  )
 
-  
-
 )
