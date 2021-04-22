@@ -14,20 +14,23 @@
     (at-lift   ?p - person ?l - lift)
     (sanitized ?l - lift)
  	(current_capacity ?l - lift ?n - number)
+    (sucesor_1 ?fi ?ff - number)
+    (sucesor_2 ?fi ?ff - number)
 )
 
 
 (:functions 
-    (dif ?fi ?ff - number)
+    (dur_move_fast)
+    (dur_move_slow)
 )
 
 (:durative-action move_up_fast
     
     :parameters (?l - fastlift ?li ?lf - number)
     
-    :duration (= ?duration 1.5)
+    :duration (= ?duration (dur_move_fast))
 
-    :condition (at start (and (at-floor ?l ?li) (= -2 (dif ?li ?lf))))
+    :condition (at start (and (at-floor ?l ?li) (sucesor_2 ?li ?lf)))
 
     :effect (and (at start (not (at-floor ?l ?li)))
                  (at end (at-floor ?l ?lf)))
@@ -37,9 +40,9 @@
     
     :parameters (?l - slowlift ?li ?lf - number)
     
-    :duration (= ?duration 1)
+    :duration (= ?duration (dur_move_slow))
 
-    :condition (at start (and (at-floor ?l ?li) (= -1 (dif ?li ?lf))))
+    :condition (at start (and (at-floor ?l ?li) (sucesor_1 ?li ?lf)))
 
     :effect (and (at start (not (at-floor ?l ?li)))
                  (at end (at-floor ?l ?lf)))
@@ -49,9 +52,9 @@
     
     :parameters (?l - fastlift ?li ?lf - number)
     
-    :duration (= ?duration 1.5)
+    :duration (= ?duration (dur_move_fast))
 
-    :condition (at start (and (at-floor ?l ?li) (= 2 (dif ?li ?lf))))
+    :condition (at start (and (at-floor ?l ?li) (sucesor_2 ?lf ?li)))
 
     :effect (and (at start (not (at-floor ?l ?li)))
                  (at end (at-floor ?l ?lf)))
@@ -61,9 +64,9 @@
     
     :parameters (?l - slowlift ?li ?lf - number)
     
-    :duration (= ?duration 1)
+    :duration (= ?duration (dur_move_slow))
 
-    :condition (at start (and (at-floor ?l ?li) (= 1 (dif ?li ?lf))))
+    :condition (at start (and (at-floor ?l ?li) (sucesor_1 ?lf ?li)))
 
     :effect (and (at start (not (at-floor ?l ?li)))
                  (at end (at-floor ?l ?lf)))
@@ -75,7 +78,7 @@
 
     :duration (= ?duration 1)
 
-    :condition (and (at start (and (at-floor ?p ?f) (current_capacity ?l ?n1) (= (dif ?n1 ?n2) -1) (sanitized ?l)))
+    :condition (and (at start (and (at-floor ?p ?f) (current_capacity ?l ?n1) (sucesor_1 ?n1 ?n2) (sanitized ?l)))
                     (over all (at-floor ?l ?f)))
 
     :effect (and (at start (not (at-floor ?p ?f)))
@@ -89,7 +92,7 @@
 
     :duration (= ?duration 1)
 
-    :condition (and (at start (and (at-lift ?p ?l) (current_capacity ?l ?n1) (= (dif ?n1 ?n2) 1)))
+    :condition (and (at start (and (at-lift ?p ?l) (current_capacity ?l ?n1) (sucesor_1 ?n2 ?n1)))
                     (over all (at-floor ?l ?f)))
     
     :effect (and (at start (not (at-lift ?p ?l)))

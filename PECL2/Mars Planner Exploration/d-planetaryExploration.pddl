@@ -1,5 +1,5 @@
 (define (domain d-planetaryExploration)
-    (:requirements :strips :equality :typing :negative-preconditions :constraints :preferences :fluents :durative-actions)
+    (:requirements :strips :equality :typing :disjunctive-preconditions :negative-preconditions :constraints :preferences :fluents :durative-actions)
 
     (:types
         coord rover_speed rover)
@@ -48,8 +48,7 @@
 
         :duration (= ?duration (dur_pict))
 
-        :condition (and (at start (and (not (PICTURE ?c ?r))
-                                       (> (current_battery ?r) (low_battery ?r))
+        :condition (and (at start (and (> (current_battery ?r) (low_battery ?r))
                                        (>= (- (current_battery ?r) (pict_battery_use)) 0)))
                         (over all (IN ?c ?r)))
         
@@ -62,8 +61,7 @@
 
         :duration (= ?duration (dur_dril))
 
-        :condition (and (at start (and (not (DRILL ?c ?r))
-                                	   (> (current_battery ?r) (low_battery ?r))
+        :condition (and (at start (and (> (current_battery ?r) (low_battery ?r))
                                 	   (>= (- (current_battery ?r) (dril_battery_use)) 0)))
                         (over all (IN ?c ?r)))
         
@@ -76,9 +74,7 @@
 
         :duration (= ?duration (dur_comm))
 
-        :condition (and (at start (and (IN ?c ?r) 
-                                       (not (COMMUNICATION ?c ?r))
-                                       (> (current_battery ?r) (low_battery ?r))
+        :condition (and (at start (and (> (current_battery ?r) (low_battery ?r))
                                        (>= (- (current_battery ?r) (comm_battery_use)) 0)))
                         (over all (IN ?c ?r)))
         
@@ -91,9 +87,7 @@
 
         :duration (= ?duration (dur_anal))
 
-        :condition (and (at start (and (IN ?c ?r) 
-                                       (not (ANALYSIS ?c ?r))
-                                       (> (current_battery ?r) (low_battery ?r))
+        :condition (and (at start (and (> (current_battery ?r) (low_battery ?r))
                                        (>= (- (current_battery ?r) (anal_battery_use)) 0)))
                         (over all (IN ?c ?r)))
         

@@ -3,8 +3,7 @@
    (:requirements :typing :fluents :durative-actions :preferences :constraints)
    (:types room ball gripper)
 
-   (:functions (dur-ball ?b - ball)
-   )
+   (:functions (dur-ball ?b - ball))
 
    (:predicates (at-robby ?r - room)
                 (at-ball ?b - ball ?r - room)

@@ -9,33 +9,26 @@
     )
 
     (:init
-         (= (dif n0 n0)  0)
-         (= (dif n0 n1) -1) (= (dif n1 n0) 1)
-         (= (dif n0 n2) -2) (= (dif n2 n0) 2)
-         (= (dif n0 n3) -3) (= (dif n3 n0) 3)
-         (= (dif n0 n4) -4) (= (dif n4 n0) 4)
 
-         (= (dif n1 n1)  0)
-         (= (dif n1 n2) -1) (= (dif n2 n1) 1)
-         (= (dif n1 n3) -2) (= (dif n3 n1) 2)
-         (= (dif n1 n4) -3) (= (dif n4 n1) 3)
+         (= (dur_move_fast) 1.5)
+         (= (dur_move_slow)   1)
 
-         (= (dif n2 n2)  0)
-         (= (dif n2 n3) -1) (= (dif n3 n2) 1)
-         (= (dif n2 n4) -2) (= (dif n4 n2) 2)
+         (sucesor_1 n0 n1) 
+         (sucesor_1 n1 n2)
+         (sucesor_1 n2 n3)
+         (sucesor_1 n3 n4)
 
-         (= (dif n3 n3)  0)
-         (= (dif n3 n4) -1) (= (dif n4 n3) 1)
-
-         (= (dif n4 n4)  0)
+         (sucesor_2 n0 n2) 
+         (sucesor_2 n1 n3)
+         (sucesor_2 n2 n4)
 
          (at-floor p1 n0)
          (at-floor p2 n4)
 
          (at-floor sl1 n1)
-         (at-floor sl2 n1)
+         (at-floor sl2 n3)
 
-         (at-floor fl1 n2)
+         (at-floor fl1 n4)
          (at-floor fl2 n2)
      
  		 (current_capacity sl1 n0)
@@ -45,9 +38,7 @@
      
     )
 
-    (:goal (and
-        (at-floor p1 n4)
-        (at-floor p2 n3))
+    (:goal (and (at-floor p1 n4) (at-floor p2 n3))
     )
   
     (:metric minimize (total-time))

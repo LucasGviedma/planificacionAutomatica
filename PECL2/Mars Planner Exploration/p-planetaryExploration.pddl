@@ -24,13 +24,16 @@
      
      	(= (distance cord1 cord2) 10)  (= (distance cord3 cord1) 20)  (= (distance cordD cord1) 10)
      	(= (distance cord1 cord3) 20)  (= (distance cord3 cord2) 10)  (= (distance cordD cord2) 40)
-     	(= (distance cord1 cord4) 10)  (= (distance cord3 cord4) 30)  (= (distance cordD cord3) 3)
-     	(= (distance cord1 cordD) 30)  (= (distance cord3 cordD) 3)   (= (distance cordD cord4) 3)
+     	(= (distance cord1 cord4) 10)  (= (distance cord3 cord4) 30)  (= (distance cordD cord3) 10)
+     	(= (distance cord1 cordD) 30)  (= (distance cord3 cordD) 10)  (= (distance cordD cord4) 25)
      
      	(= (distance cord2 cord1) 10)  (= (distance cord4 cord1) 10)
      	(= (distance cord2 cord3) 10)  (= (distance cord4 cord2) 10)
      	(= (distance cord2 cord4) 10)  (= (distance cord4 cord3) 10)
-     	(= (distance cord2 cordD) 40)  (= (distance cord4 cordD) 3)
+     	(= (distance cord2 cordD) 40)  (= (distance cord4 cordD) 25)
+     
+     	(DANGER cordD)
+     	
     )
 
     (:goal (and 
@@ -41,7 +44,7 @@
             )        
     )
   
-    (:constraints (and (preference keepSafe (always (not (IN cordD rover1))))
-                       (preference phot56   (sometime (PICTURE cord1 rover1)))))
-
+    (:constraints (and (preference keepSafe (always (forall (?rover - rover ?cord - coord) (imply (DANGER ?cord) (not (IN ?cord ?rover))))))
+                       ;(preference phot56   (sometime (PICTURE cord1 rover1)))
+                    ))
 )

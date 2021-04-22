@@ -1,48 +1,64 @@
 (define (domain d-movingout)
 
- (:requirements :typing :negative-preconditions :conditional-effects :durative-actions :equality)
+ (:requirements :typing :fluents :negative-preconditions :conditional-effects :durative-actions :equality)
 
- (:types container location)
+ (:types object location)
 
- (:constants O - container)
+ (:constants contenedor_const - object)
+
+ (:functions (dur_takeout ?o - object))
 
  (:predicates
-     (in ?o ?c - container)
-     (at ?c - container ?l - location)
+     (in ?o - object)
+     (at ?o - object ?l - location)
  )
 
-(:durative-action move_container
+; -- CON FORALL COMENTADO --
+;
+;(:action move_contenedor 
+;    
+;     :parameters (?li ?lf - location)
+;
+;     :precondition (and (at contenedor_const ?li) (not (= ?li ?lf)))
+;
+;     :effect 
+;     (and (at contenedor_const ?lf) (not (at contenedor_const ?li)))
+;     (forall (?o - object) (when (and (not (= ?o contenedor_const)) (in ?o)) (and (not (at ?o ?li)) (at ?o ?lf)))))
+;              
+;)
+
+ (:durative-action move_contenedor
      
      :parameters (?li ?lf - location)
 
-     :duration (= ?duration 1)
+     :duration (= ?duration 10)
 
-     :condition (at start (and (at O ?li) (not (= ?li ?lf))))
+     :condition (at start (and (at contenedor_const ?li) (not (= ?li ?lf))))
 
-     :effect (and (at start (and (not (at O ?li)) (forall (?x - container) (when (in ?x O) (not (at ?x ?li))))))
-                  (at end (and (at O ?lf) (forall (?x - container) (when (in ?x O) (at ?x ?lf))))))
+     :effect (and (at start (not (at contenedor_const ?li)))
+                  (at end   (at contenedor_const ?lf)))
+              
  )
 
- (:durative-action put_in
+ (:action put_in
      
-     :parameters (?c ?o - container ?lo - location)
+     :parameters (?o - object ?lo - location)
 
-     :duration (= ?duration 1)
+     :precondition (and (not (= ?o contenedor_const)))
 
-     :condition (at start (and (not (in ?o ?c)) (not (= ?o ?c))))
-
-     :effect (at end (when (and (at ?c ?lo) (at ?o ?lo)) (in ?o ?c)))
+     :effect (when (and (at ?o ?lo) (at contenedor_const ?lo)) (in ?o))
  )
      
  (:durative-action take_out
      
-     :parameters (?c ?o - container)
+     :parameters (?x - object ?l - location)
 
      :duration (= ?duration 1)
 
-     :condition (at start (in ?o ?c))
+     :condition (at start (and (in ?x) (at contenedor_const ?l)))
 
-     :effect (at end (not (in ?o ?c)))
+     :effect (and (at start (not (in ?x)))
+                  (at end (at ?x ?l)))
  )
 
 )
