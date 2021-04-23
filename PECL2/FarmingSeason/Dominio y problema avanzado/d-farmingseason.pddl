@@ -33,11 +33,9 @@
 
         (capacidad_abono_total)
         (capacidad_abono_actual)
-        (capacidad_llenado_abono)
 
         (capacidad_agua_total)
         (capacidad_agua_actual)
-        (capacidad_llenado_agua)
 
         (agua_necesaria_riego ?p - planta)
         (tamano ?t - terreno)
@@ -66,7 +64,6 @@
         (brote ?p - planta ?t - terreno)
 
         (no_creciendo   ?p - planta ?t - terreno)
-        (lista          ?p - planta)
                 
         (no_en_uso ?h - herramienta)
     )
@@ -183,7 +180,8 @@
         :parameters (?p - planta)
         :duration (= ?duration (t_comprar))
         :condition (at start (< (semillas_actuales ?p) (capacidad_semillas ?p)))
-        :effect (at end (and (increase (coste_total) (* (coste_semilla ?p) (- (capacidad_semillas ?p) (semillas_actuales ?p)))) (assign (semillas_actuales ?p) (capacidad_semillas ?p))))
+        :effect (at end (and (increase (coste_total) (* (coste_semilla ?p) (- (capacidad_semillas ?p) (semillas_actuales ?p)))) 
+                             (assign (semillas_actuales ?p) (capacidad_semillas ?p))))
     )
   
 )

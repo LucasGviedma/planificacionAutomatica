@@ -30,13 +30,13 @@
            (= (tamano parcela1) 100) (= (incremento_crecimiento_por_agua parcela1) 1) 
            (cosechado parcela1) (no_abonado parcela1) (no_rastrillado parcela1) (no_arado parcela1) (no_ocupado parcela1)  
      
-     	   (= (tamano parcela2) 130) (= (incremento_crecimiento_por_agua parcela2) 1) 
+     	    (= (tamano parcela2) 130) (= (incremento_crecimiento_por_agua parcela2) 1) 
            (cosechado parcela2) (no_abonado parcela2) (no_rastrillado parcela2) (no_arado parcela2) (no_ocupado parcela2) 
      
            (= (tamano parcela3) 160) (= (incremento_crecimiento_por_agua parcela3) 1)
            (cosechado parcela3) (no_abonado parcela3) (no_rastrillado parcela3) (no_arado parcela3) (no_ocupado parcela3)		
          
-     	   (no_plantada fruta1)
+     	    (no_plantada fruta1)
            (= (crecimiento_planta_actual fruta1) 0) (= (crecimiento_planta_fase fruta1) 20) (= (agua_necesaria_riego fruta1) 2.5)
      	
            (no_plantada fruta2)
