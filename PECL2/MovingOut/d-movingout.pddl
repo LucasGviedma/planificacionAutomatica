@@ -27,16 +27,13 @@
 ;              
 ;)
 
- (:durative-action move_contenedor
+ (:action move_contenedor
      
      :parameters (?li ?lf - location)
 
-     :duration (= ?duration 10)
+     :precondition (and (at contenedor_const ?li) (not (= ?li ?lf)))
 
-     :condition (at start (and (at contenedor_const ?li) (not (= ?li ?lf))))
-
-     :effect (and (at start (not (at contenedor_const ?li)))
-                  (at end   (at contenedor_const ?lf)))
+     :effect (and (not (at contenedor_const ?li)) (at contenedor_const ?lf))
               
  )
 
