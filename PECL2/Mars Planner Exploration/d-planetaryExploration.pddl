@@ -26,9 +26,9 @@
         (DANGER        ?c - coord) 
     )
 
-    (:durative-action go_from_to
+    (:durative-action move
         
-        :parameters (?ci ?cf - coord ?s - rover_speed ?r - rover)
+        :parameters (?r - rover ?ci ?cf - coord ?s - rover_speed )
 
         :duration (= ?duration (/ (distance ?ci ?cf) (speed ?s ?r)))
 
